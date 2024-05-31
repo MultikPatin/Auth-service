@@ -1,0 +1,90 @@
+name: test_auth_app
+services:
+
+  postgres:
+    image: postgres:${POSTGRES_VERSION}
+    container_name: ${POSTGRES_HOST}
+    restart: always
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+      start_period: 3s
+    ports:
+      - "5432:5432"
+    networks:
+      - test_services
+
+  migrations:
+    build:
+      dockerfile: ./migrations/Dockerfile
+    container_name: migrations
+    environment:
+      - LOCAL=False
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - test_services
+
+  redis:
+    image: redis:${REDIS_VERSION}
+    container_name: ${REDIS_HOST}
+    restart: always
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    networks:
+      - test_services
+
+  api:
+    build:
+      dockerfile: src/api/Dockerfile
+    container_name: ${API_HOST}
+    restart: always
+    environment:
+      - LOCAL=False
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    networks:
+      - test_services
+
+  auth_tests:
+    build:
+      dockerfile: tests/Dockerfile
+    container_name: auth_tests
+    restart: no
+    environment:
+      - LOCAL=False
+    env_file:
+      - .env
+    depends_on:
+      api:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - test_services
+
+networks:
+  test_services:

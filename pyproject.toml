@@ -1,0 +1,132 @@
+[tool.poetry]
+name = "auth-service"
+version = "0.1.0"
+description = ""
+authors = ["Dmitry Patin <multik.patin@yandex.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pydantic-settings = "^2.2.1"
+pydantic = {extras = ["email"], version = "^2.7.0"}
+backoff = { version = "^2.2.1", optional = true }
+fastapi = { version = "^0.110.0", optional = true }
+uvicorn = { version = "^0.29.0", optional = true }
+redis = { version = "^5.0.3", optional = true }
+gunicorn = {version = "^21.2.0", optional = true}
+alembic = {version = "^1.13.1", optional = true}
+sqlalchemy = {version = "2.0.29", extras = ["asyncio"]}
+asyncpg = {version = "^0.29.0", optional = true}
+werkzeug = {version = "^3.0.2", optional = true}
+async-fastapi-jwt-auth = {version = "^0.6.4", optional = true}
+psycopg2-binary = {version = "^2.9.9", optional = true}
+certifi = {version = "^2024.2.2", optional = true}
+pyjwt = {version = "^2.8.0", optional = true}
+
+[tool.poetry.extras]
+api = [
+    "redis",
+    "fastapi",
+    "sqlalchemy",
+    "gunicorn",
+    "uvicorn",
+    "asyncpg",
+    "werkzeug",
+    "async-fastapi-jwt-auth",
+]
+migrations = [
+    "sqlalchemy",
+    "alembic",
+    "asyncpg",
+    "werkzeug",
+]
+test = [
+    "redis",
+    "fastapi",
+    "werkzeug",
+    "backoff",
+    "psycopg2-binary",
+    "certifi",
+    "pyjwt",
+]
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.1.11"
+pre-commit = "^3.6.2"
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.1.1"
+pytest-asyncio = "0.21.1"
+aiohttp = "^3.9.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+select = [
+    "E", # pycodestyle errors
+    "W", # pycodestyle warnings
+    "UP", # pyupgrade
+    "F", # pyflakes
+    "I", # isort
+    "C", # flake8-comprehensions
+    "B", # flake8-bugbear
+    "SIM", # flake8-simplify
+]
+ignore = [
+    "B905",
+    "E501", # line too long, handled by black
+    "B008", # do not perform function calls in argument defaults
+    "C901", # too complex
+]
+
+fixable = ["ALL"]
+unfixable = []
+
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "tests",
+    "dist",
+    "node_modules",
+    "venv",
+    "*/settings.py",
+    "*/migrations/",
+    "*/config/components/",
+    "tasks",
+]
+per-file-ignores = { }
+
+line-length = 80
+
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+target-version = "py311"
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 60
