@@ -5,8 +5,11 @@ from uuid import UUID
 from fastapi import Depends
 from sqlalchemy import func, select
 
-from src.api.models.api.v1.login_history import RequestLoginHistory
-from src.core.db.clients.postgres import PostgresDatabase, get_postgres_db
+from src.auth.models.api.v1.login_history import RequestLoginHistory
+from src.core.db.clients.postgres import (
+    PostgresDatabase,
+    get_postgres_auth_db,
+)
 from src.core.db.entities import LoginHistory
 from src.core.db.repositories.base import InitRepository
 
@@ -52,6 +55,6 @@ class LoginHistoryRepository(InitRepository):
 
 @lru_cache
 def get_login_history_repository(
-    database: PostgresDatabase = Depends(get_postgres_db),
+    database: PostgresDatabase = Depends(get_postgres_auth_db),
 ) -> LoginHistoryRepository:
     return LoginHistoryRepository(database, LoginHistory)

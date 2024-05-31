@@ -22,6 +22,7 @@ class Role(Entity):
     )
     permissions = relationship(
         "Permission",
+        cascade="all, delete",
         secondary="roles_permissions",
         back_populates="roles",
     )

@@ -6,11 +6,14 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from src.api.models.api.v1.roles import (
+from src.auth.models.api.v1.roles import (
     RequestRoleCreate,
     RequestRoleUpdate,
 )
-from src.core.db.clients.postgres import PostgresDatabase, get_postgres_db
+from src.core.db.clients.postgres import (
+    PostgresDatabase,
+    get_postgres_auth_db,
+)
 from src.core.db.entities import Role
 from src.core.db.repositories.base import (
     CountRepositoryMixin,
@@ -41,6 +44,6 @@ class RoleRepository(
 
 @lru_cache
 def get_role_repository(
-    database: PostgresDatabase = Depends(get_postgres_db),
+    database: PostgresDatabase = Depends(get_postgres_auth_db),
 ) -> RoleRepository:
     return RoleRepository(database, Role)

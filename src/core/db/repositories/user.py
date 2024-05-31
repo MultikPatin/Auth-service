@@ -6,10 +6,13 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
-from src.api.core.config import settings
-from src.api.models.api.v1.users import RequestUserCreate, RequestUserUpdate
-from src.api.models.api.v1.users_additional import RequestPasswordChange
-from src.core.db.clients.postgres import PostgresDatabase, get_postgres_db
+from src.auth.core.config import settings
+from src.auth.models.api.v1.users import RequestUserCreate, RequestUserUpdate
+from src.auth.models.api.v1.users_additional import RequestPasswordChange
+from src.core.db.clients.postgres import (
+    PostgresDatabase,
+    get_postgres_auth_db,
+)
 from src.core.db.entities import User
 from src.core.db.repositories.base import (
     CountRepositoryMixin,
@@ -81,7 +84,7 @@ class UserRepository(
 
 @lru_cache
 def get_user_repository(
-    database: PostgresDatabase = Depends(get_postgres_db),
+    database: PostgresDatabase = Depends(get_postgres_auth_db),
     role_repository: RoleRepository = Depends(get_role_repository),
 ) -> UserRepository:
     return UserRepository(database, User, role_repository)

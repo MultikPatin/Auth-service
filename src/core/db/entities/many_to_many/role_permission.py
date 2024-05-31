@@ -9,10 +9,10 @@ class RolePermission(Entity):
     __tablename__ = "roles_permissions"
 
     role_uuid: Mapped[UUID(as_uuid=True)] = mapped_column(
-        ForeignKey("roles.uuid")
+        ForeignKey("roles.uuid", ondelete="CASCADE")
     )
     permission_uuid: Mapped[UUID(as_uuid=True)] = mapped_column(
-        ForeignKey("permissions.uuid")
+        ForeignKey("permissions.uuid", ondelete="CASCADE")
     )
 
     __table_args__ = (

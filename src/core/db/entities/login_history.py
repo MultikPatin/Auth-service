@@ -14,7 +14,7 @@ class LoginHistory(Entity):
     __tablename__ = "login_history"
 
     user_uuid: Mapped[UUID(as_uuid=True)] = mapped_column(
-        ForeignKey("users.uuid")
+        ForeignKey("users.uuid", ondelete="CASCADE")
     )
     ip_address: Mapped[str] = mapped_column(String(64))
     user_agent: Mapped[str] = mapped_column(String(255))

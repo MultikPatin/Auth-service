@@ -3,10 +3,13 @@ from uuid import UUID
 from fastapi import Depends
 from sqlalchemy import and_, delete, select
 
-from src.api.models.api.v1.role_pemission import (
+from src.auth.models.api.v1.role_pemission import (
     RequestRolePermissionShortCreate,
 )
-from src.core.db.clients.postgres import PostgresDatabase, get_postgres_db
+from src.core.db.clients.postgres import (
+    PostgresDatabase,
+    get_postgres_auth_db,
+)
 from src.core.db.entities import RolePermission
 from src.core.db.repositories.many_to_many.base import (
     ManyToManyPostgresRepository,
@@ -46,6 +49,6 @@ class RolePermissionRepository(
 
 
 def get_role_permission_repository(
-    database: PostgresDatabase = Depends(get_postgres_db),
+    database: PostgresDatabase = Depends(get_postgres_auth_db),
 ) -> RolePermissionRepository:
     return RolePermissionRepository(database, RolePermission)

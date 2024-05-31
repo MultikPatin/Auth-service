@@ -2,7 +2,8 @@ name: auth_app
 services:
 
   postgres:
-    image: postgres:${POSTGRES_VERSION}
+    build:
+      dockerfile: src/postgres_extensions/Dockerfile
     container_name: ${POSTGRES_HOST}
     restart: always
     env_file:
@@ -52,9 +53,9 @@ services:
     networks:
       - services
 
-  api:
+  auth:
     build:
-      dockerfile: src/api/Dockerfile
+      dockerfile: src/auth/Dockerfile
     container_name: ${API_HOST}
     restart: always
     environment:

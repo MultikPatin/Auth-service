@@ -48,9 +48,9 @@ services:
     networks:
       - test_services
 
-  api:
+  auth:
     build:
-      dockerfile: src/api/Dockerfile
+      dockerfile: src/auth/Dockerfile
     container_name: ${API_HOST}
     restart: always
     environment:
